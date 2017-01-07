@@ -31,5 +31,6 @@
 		<module>sqlite</module>
 		<module>web</module>
 		<module>upload</module>
+		<module>ocr</module>
 	</modules>
 </project>

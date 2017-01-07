@@ -64,7 +64,11 @@
 		    <artifactId>javaocr-core</artifactId>
 		    <version>1.0</version>
 		</dependency>
-		
+		<dependency>
+		    <groupId>net.sourceforge.javaocr.plugins</groupId>
+		     <artifactId>javaocr-plugin-awt</artifactId>
+		    <version>1.0</version>
+		</dependency>
 		<!-- Apache Commons FileUpload --> 
 <dependency>
 	<groupId>commons-fileupload</groupId>
