@@ -27,6 +27,7 @@
 	</dependencies>
 	 <modules>
 	    <module>restfull</module>
+		<module>sqlite</module>
 		<module>web</module>		
 	</modules>
 </project>
