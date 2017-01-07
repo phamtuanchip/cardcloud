@@ -51,26 +51,26 @@ public class HelloController {
 			Contact yourContact = new Contact(24, "Your Name", "your_email@email.com");
 
 			// Saving to the database
-			session.save(myContact);
-			session.save(yourContact);
+			//session.save(myContact);
+			//session.save(yourContact);
 
 			// Committing the change in the database.
-			session.flush();
-			tx.commit();
+			//session.flush();
+			//tx.commit();
 
 			// Fetching saved data
-			List<Contact> contactList = session.createQuery("from Contact").list();
+			//List<Contact> contactList = session.createQuery("from Contact").list();
 
-			for (Contact contact : contactList) {
-				System.out.println("Id: " + contact.getId() + " | Name:"  + contact.getName() + " | Email:" + contact.getEmail());
-			}
+			//for (Contact contact : contactList) {
+				//System.out.println("Id: " + contact.getId() + " | Name:"  + contact.getName() + " | Email:" + contact.getEmail());
+			//}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 
 			// Rolling back the changes to make the data consistent in case of any failure 
 			// in between multiple database write operations.
-			tx.rollback();
+			//tx.rollback();
 		} finally{
 			if(session != null) {
 				session.close();
