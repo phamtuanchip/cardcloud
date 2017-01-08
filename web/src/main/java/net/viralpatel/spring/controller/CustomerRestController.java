@@ -88,16 +88,28 @@ public class CustomerRestController {
 			if (!dir.exists())
 				dir.mkdirs();
 
-			//File file = new File(dir.getAbsolutePath() + File.separator + name);
+			File file = new File(dir.getAbsolutePath() + File.separator + name);
 
 			//System.out.println(file.getAbsolutePath());
 
 			String base64Image = imageBase64.split(",")[1];
+			//Base64.getMimeDecoder().
+			//byte[] decodedImg = Base64.getMimeDecoder().decode(base64Image);
+			//byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(imageBase64);
+			//byte[] decodedImg = new Base64Security().decodeBase64ToBytes(base64Image.getBytes());
+			
+			//Path destinationFile = Paths.get(dir.getAbsolutePath(), name);
+			//Files.write(destinationFile, decodedImg);
+			//String convereted = Base64.getEncoder().withoutPadding().encodeToString(base64Image.getBytes());
+			byte[] imageBytes = Base64.getMimeDecoder().decode(base64Image);
+			BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+			
+			//File imageFile = new File("Image.png");
 
-			byte[] decodedImg = Base64.getMimeDecoder().decode(base64Image.getBytes());
-			Path destinationFile = Paths.get(dir.getAbsolutePath(), name);
-			Files.write(destinationFile, decodedImg);
-			 
+			ImageIO.write(bufferedImage, "png", file);
+			
+			
+			
 			res.put("ret", 0);
 			res.put("msg", message);
 

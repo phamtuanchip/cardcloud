@@ -75,8 +75,7 @@
 		    var canvas  = document.getElementById("canvas");
 		    ctx = canvas.getContext('2d') 
 		    
-		   var dataUrl = canvas.toDataURL("image/png");
-		    
+		   var dataUrl = canvas.toDataURL("image/png");		    
 		   // var dataUrl = canvas.toDataURL("image/jpeg");
 	    var xmlHttpReq = false;       
 	    if (window.XMLHttpRequest) {
