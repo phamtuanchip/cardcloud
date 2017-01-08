@@ -8,23 +8,23 @@
 <body>
 	<div class="container">
 		<c:import url='nav.jsp'></c:import>
-		<div class="card" style="width: 30em; float:left;">
+		<div class="card" style="width: 30em; height:30em; float:left;">
 		  <h4 class="card-title">Reading card</h4>
 		<form id ="upload" method="POST" action="upload" enctype="multipart/form-data">
 			<input  id="file" type="file" name="file" style="display:none;">
 			<input id="submit" type="submit" value="Process"  style="display:none;" >		
-		 <label for="file"><img id="preview" class="card-img-top" alt="Click to select image"/></label> 
+		 <label for="file"><img id="preview" src="${fileUrl}" class="card-img-top" alt="Click to select image"/></label> 
 		  <div class="card-block">
 		  
-		    <p class="card-text">${message}</p>
+		    <p id="content" class="card-text">${message}</p>
 		     <label  class="btn btn-primary" for="submit">Process</label>
 		     <label  class="btn btn-primary" for="">Save</label>
 		  </div>
 		  </form>
 		</div>
 		
-		<div class="card" style="width: 30rem; float:left;">
-		<img class="card-img-top" src="${fileUrl}" alt="Uploaded image"/>
+		<div class="card-block" style="width: 30em; float:left;">
+		 
 		<form action="">
 			<div class="form-group row">
 				<label for="example-text-input" class="col-2 col-form-label">Name</label>
@@ -95,6 +95,7 @@
 
 		$("#file").change(function() {
 			readURL(this);
+			$('#content').html("");
 		});
 	</script>
 </body>

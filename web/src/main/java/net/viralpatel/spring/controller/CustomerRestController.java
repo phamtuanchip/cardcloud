@@ -13,7 +13,9 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+ 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,20 +37,22 @@ public class CustomerRestController {
 
 	@Autowired
 	private CustomerDAO customerDAO;
-
+	private static final String SERVER_UPLOAD_LOCATION_FOLDER = "/tmpFiles";
 	@GetMapping("/customers")
 	public List getCustomers() {
 		return customerDAO.list();
 	}
 
-	@GetMapping("/image/{filename}")
-	public void getImage(HttpServletResponse response, @PathVariable("filename") String filename) throws IOException {
+	@GetMapping("/image/{filename}.{fileext}")
+	public void getImage(HttpServletRequest request, HttpServletResponse response, @PathVariable("filename") String filename,  @PathVariable("fileext") String fileext) throws IOException {
 
 		String rootPath = System.getProperty("catalina.home");
 		File dir = new File(rootPath + File.separator + "tmpFiles");
 
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		File file = new File(classloader.getResource(dir.getAbsolutePath()).getFile());
+		String filePath = dir.getAbsolutePath() + File.separator + filename +"."+ fileext;
+		System.out.println("===>>> " + filePath);
+		File file = new File(filePath);
 
 		if (!file.exists()) {
 			String errorMessage = "Sorry. The file you are looking for does not exist";
