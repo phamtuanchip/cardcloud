@@ -13,7 +13,7 @@
 		<form id ="upload" method="POST" action="upload" enctype="multipart/form-data">
 			<input  id="file" type="file" name="file" style="display:none;">
 			<input id="submit" type="submit" value="Process"  style="display:none;" >		
-		 <label for="file"><img id="preview" src="${fileUrl}" class="card-img-top" alt="Click to select image"/></label> 
+		 <label for="file"><img id="preview" src="${fileUrl}" class="card-img-top" alt="Click to select image" style="max-width: 30em; max-height:20em;"/></label> 
 		  <div class="card-block">
 		  
 		    <p id="content" class="card-text">${message}</p>

@@ -4,6 +4,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import org.hibernate.annotations.common.util.impl.LoggerFactory;
@@ -77,7 +81,12 @@ public class FileUploadController {
 
 		return "upload";
 	}
-
+	private  final static String getDateTime()  
+	{  
+	    DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");  
+	    df.setTimeZone(TimeZone.getTimeZone("PST"));  
+	    return df.format(new Date());  
+	}  
 	/**
 	 * Upload single file using Spring Controller
 	 */
@@ -86,12 +95,13 @@ public class FileUploadController {
 	public String uploadFileHandler(@RequestParam("file") MultipartFile file, Model model) {
 		// @RequestParam("name") String name,
 
-		String name = "";
+		String name = getDateTime();
 		String message = "You successfully uploaded file";
 		if (!file.isEmpty()) {
 			try {
 				byte[] bytes = file.getBytes();
-				name = file.getOriginalFilename();
+				String realfile = file.getOriginalFilename();
+				name += realfile.substring(realfile.lastIndexOf("."), realfile.length());
 				// Creating the directory to store file
 				String rootPath = System.getProperty("catalina.home");
 				File dir = new File(rootPath + File.separator + "tmpFiles");

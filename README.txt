@@ -46,3 +46,6 @@ Access ```http://localhost:8080/spring4/customers```
 
 ###4. Project Demo
 Please refer to this article [Spring 4 RESTFul Service Tutorial](http://viralpatel.net/blogs/spring-4-mvc-rest-example-json/)
+
+#### encode
+mvn -Dmaven.tomcat.uriEncoding=UTF-8 tomcat7:run
