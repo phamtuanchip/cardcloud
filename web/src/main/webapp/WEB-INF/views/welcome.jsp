@@ -13,7 +13,7 @@
 	<h2>This is home site</h2>
 
 	<p>Welcome, ${name}</p>
-
+	<img id="avata" style="border-radius: 50%;" src=""/>
 	<!-- Button trigger modal -->
 	<a type="button" class="btn btn-primary" data-toggle="modal" href="#myModal" >Take picture</a>
 		    

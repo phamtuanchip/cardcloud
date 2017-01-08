@@ -1,9 +1,13 @@
 package net.viralpatel.spring.controller;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,12 +17,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
@@ -51,51 +61,77 @@ public class CustomerRestController {
 	@Autowired
 	private CustomerDAO customerDAO;
 	private static final String SERVER_UPLOAD_LOCATION_FOLDER = "/tmpFiles";
+
 	@GetMapping("/customers")
 	public List getCustomers() {
 		return customerDAO.list();
 	}
-	private  final static String getDateTime()  
-	{  
-	    DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");  
-	    df.setTimeZone(TimeZone.getTimeZone("PST"));  
-	    return df.format(new Date());  
-	}  
-	
+
+	private final static String getDateTime() {
+		DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+		df.setTimeZone(TimeZone.getTimeZone("PST"));
+		return df.format(new Date());
+	}
+
 	// java(controller)
 	@PostMapping("ajaxupload")
-	public Map<String,Object> saveCanvasImage(
-	        @RequestParam(value="imageBase64", defaultValue="")String imageBase64) {
-	    Map<String,Object> res = new HashMap<String, Object>();
-		String name = getDateTime() +".png" ;
+	public Map<String, Object> saveCanvasImage(
+			@RequestParam(value = "imageBase64", defaultValue = "") String imageBase64) {
+		Map<String, Object> res = new HashMap<String, Object>();
+		String name = getDateTime() + ".png";
 		String message = "You successfully uploaded file";
-		
-	    try{
-	    	String rootPath = System.getProperty("catalina.home");
+
+		try {
+			// System.out.println(imageBase64);
+			String rootPath = System.getProperty("catalina.home");
 			File dir = new File(rootPath + File.separator + "tmpFiles");
 			if (!dir.exists())
 				dir.mkdirs();
-			 
-			File file = new File(dir.getAbsolutePath() + File.separator + name);
-	    	 
-			 byte[] decodedBytes = DatatypeConverter.parseBase64Binary(imageBase64.replaceAll("data:image/.+;base64,", ""));
-		        BufferedImage bfi = ImageIO.read(new ByteArrayInputStream(decodedBytes));
-		        ImageIO.write(bfi , "png", file);
-		        bfi.flush();
-		        res.put("ret", 0);
-			 
 
-		 
-	    	
-	    }catch(Exception e){
-	        res.put("ret", -1);
-	        res.put("msg", "Cannot process due to the image processing error.");
-	        return res;
-	    }
+			//File file = new File(dir.getAbsolutePath() + File.separator + name);
 
-	    return res;
+			//System.out.println(file.getAbsolutePath());
+
+			String base64Image = imageBase64.split(",")[1];
+
+			byte[] decodedImg = Base64.getMimeDecoder().decode(base64Image.getBytes());
+			Path destinationFile = Paths.get(dir.getAbsolutePath(), name);
+			Files.write(destinationFile, decodedImg);
+			 
+			res.put("ret", 0);
+			res.put("msg", message);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.put("ret", -1);
+			res.put("msg", e.getMessage());
+			return res;
+		}
+
+		return res;
 	}
-	
+
+	public Optional<ByteArrayInputStream> Base64InputStream(Optional<String> base64String) throws IOException {
+		if (base64String.isPresent()) {
+			return Optional
+					.ofNullable(new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(base64String.get())));
+		}
+
+		return Optional.empty();
+	}
+
+	public Optional<String> InputStreamToBase64(Optional<InputStream> inputStream) throws IOException {
+		if (inputStream.isPresent()) {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			FileCopyUtils.copy(inputStream.get(), output);
+			// TODO retrieve content type from file, & replace png below with it
+			return Optional
+					.ofNullable("data:image/png;base64," + DatatypeConverter.printBase64Binary(output.toByteArray()));
+		}
+
+		return Optional.empty();
+	}
+
 	@PostMapping("/image/upload")
 	public String saveImage(@RequestParam("file") MultipartFile file, Model model) {
 		// @RequestParam("name") String name,
@@ -139,15 +175,15 @@ public class CustomerRestController {
 		}
 	}
 
-	
 	@GetMapping("/image/{filename}.{fileext}")
-	public void getImage(HttpServletRequest request, HttpServletResponse response, @PathVariable("filename") String filename,  @PathVariable("fileext") String fileext) throws IOException {
+	public void getImage(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("filename") String filename, @PathVariable("fileext") String fileext) throws IOException {
 
 		String rootPath = System.getProperty("catalina.home");
 		File dir = new File(rootPath + File.separator + "tmpFiles");
 
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		String filePath = dir.getAbsolutePath() + File.separator + filename +"."+ fileext;
+		String filePath = dir.getAbsolutePath() + File.separator + filename + "." + fileext;
 		System.out.println("===>>> " + filePath);
 		File file = new File(filePath);
 

@@ -81,12 +81,13 @@ public class FileUploadController {
 
 		return "upload";
 	}
-	private  final static String getDateTime()  
-	{  
-	    DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");  
-	    df.setTimeZone(TimeZone.getTimeZone("PST"));  
-	    return df.format(new Date());  
-	}  
+
+	private final static String getDateTime() {
+		DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+		df.setTimeZone(TimeZone.getTimeZone("PST"));
+		return df.format(new Date());
+	}
+
 	/**
 	 * Upload single file using Spring Controller
 	 */

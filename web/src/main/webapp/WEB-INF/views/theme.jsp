@@ -7,8 +7,8 @@
 
 <script type="text/javascript"
 	src='<c:url value="/resources/jquery-3.1.1/jquery.min.js"/>'></script>
-<script type="text/javascript"
-	src='<c:url value="/resources/jquery-3.1.1/jquery.slim.min.js"/>'></script>
+<!-- script type="text/javascript"
+	src='<c:url value="/resources/jquery-3.1.1/jquery.slim.min.js"/>'></script -->
 <script type="text/javascript"
 	src='<c:url value="/resources/tether-1.4.0/tether.min.js"/>'></script>
 

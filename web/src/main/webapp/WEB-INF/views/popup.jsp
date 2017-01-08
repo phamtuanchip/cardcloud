@@ -10,12 +10,12 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body">
+				<div id="popupbody" class="modal-body">
 				 
 				<video id="video" width="468" height="320" autoplay></video>
 				
 				<button id="snap">Snap Photo</button>
-				<canvas id="canvas" width="468" height="320"></canvas>
+				<!-- canvas id="canvas" width="468" height="320"></canvas -->
 				
 				</div>
 				<div class="modal-footer">
@@ -35,6 +35,7 @@
 	$('#myModal').on('hide.bs.modal', function (e) {
 		 
 		localStream.getVideoTracks()[0].stop();
+		if($("#canvas"))$("#canvas").remove();
 	})
 	$('#myModal').on('show.bs.modal', function (e) {
 		// Grab elements, create settings, etc.
@@ -52,13 +53,20 @@
 		
 	 
 		// Elements for taking the snapshot
-		var canvas = document.getElementById('canvas');
+		if($("#canvas"))$("#canvas").remove();
+		var canvas = document.createElement('canvas');
+		canvas.id     = "canvas";
+		canvas.width  = 100;
+		canvas.height = 80;
+		$("#popupbody").append(canvas);
+		//var canvas = document.getElementById('canvas');
 		var context = canvas.getContext('2d');
 		var video = document.getElementById('video');
 
 		// Trigger photo take
 		document.getElementById("snap").addEventListener("click", function() {
-			context.drawImage(video, 0, 0, 468, 320);
+			context.drawImage(video, 0, 0, 100, 80);
+			$("#avata").attr("src",canvas.toDataURL("image/png"));
 		});
 	});
 	$("#save").on("click", function() {
@@ -67,7 +75,7 @@
 		    var canvas  = document.getElementById("canvas");
 		    ctx = canvas.getContext('2d') 
 		    
-		   var dataUrl = canvas.toDataURL();
+		   var dataUrl = canvas.toDataURL("image/png");
 		    
 		   // var dataUrl = canvas.toDataURL("image/jpeg");
 	    var xmlHttpReq = false;       
