@@ -27,10 +27,13 @@
 		</dependency>
 	</dependencies>
 	 <modules>
-	    <module>restfull</module>
-		<module>sqlite</module>
+	   
 		<module>web</module>
+		<!--
+		<module>restfull</module>
+		<module>sqlite</module>
 		<module>upload</module>
 		<module>ocr</module>
+		-->
 	</modules>
 </project>
