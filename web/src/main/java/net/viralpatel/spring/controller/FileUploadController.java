@@ -24,8 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-
+import storage.OCRService;
 import storage.StorageFileNotFoundException;
 import storage.StorageService;
 
@@ -33,64 +32,62 @@ import storage.StorageService;
 public class FileUploadController {
 
 	/**
-    private final StorageService storageService;
+	 * private final StorageService storageService;
+	 * 
+	 * @Autowired public FileUploadController(StorageService storageService) {
+	 *            this.storageService = storageService; }
+	 * 
+	 * 			@GetMapping("/") public String listUploadedFiles(Model model)
+	 *            throws IOException {
+	 * 
+	 * 
+	 *            return "uploadForm"; }
+	 * 
+	 * 			@GetMapping("/files/{filename:.+}")
+	 * @ResponseBody public ResponseEntity<Resource> serveFile(@PathVariable
+	 *               String filename) {
+	 * 
+	 *               Resource file = storageService.loadAsResource(filename);
+	 *               return ResponseEntity .ok()
+	 *               .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;
+	 *               filename=\""+file.getFilename()+"\"") .body(file); }
+	 * 
+	 * 				@PostMapping("/") public String
+	 *               handleFileUpload(@RequestParam("file") MultipartFile file,
+	 *               RedirectAttributes redirectAttributes) {
+	 * 
+	 *               storageService.store(file);
+	 *               redirectAttributes.addFlashAttribute("message", "You
+	 *               successfully uploaded " + file.getOriginalFilename() +
+	 *               "!");
+	 * 
+	 *               return "redirect:/"; }
+	 * 
+	 * @ExceptionHandler(StorageFileNotFoundException.class) public
+	 *                                                       ResponseEntity
+	 *                                                       handleStorageFileNotFound(StorageFileNotFoundException
+	 *                                                       exc) { return
+	 *                                                       ResponseEntity.notFound().build();
+	 *                                                       }
+	 * 
+	 */
 
-    @Autowired
-    public FileUploadController(StorageService storageService) {
-        this.storageService = storageService;
-    }
-
-    @GetMapping("/")
-    public String listUploadedFiles(Model model) throws IOException {
-
-       
-        return "uploadForm";
-    }
-
-    @GetMapping("/files/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-
-        Resource file = storageService.loadAsResource(filename);
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+file.getFilename()+"\"")
-                .body(file);
-    }
-
-    @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
-
-        storageService.store(file);
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
-        return "redirect:/";
-    }
-
-    @ExceptionHandler(StorageFileNotFoundException.class)
-    public ResponseEntity handleStorageFileNotFound(StorageFileNotFoundException exc) {
-        return ResponseEntity.notFound().build();
-    }
-    
-    */
-	
 	@GetMapping("/upload")
 	public String hello(Model model) {
-		
+
 		return "upload";
 	}
 
 	/**
 	 * Upload single file using Spring Controller
 	 */
-	//@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-	@PostMapping("/uploadFile")
+	// @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+	@PostMapping("/upload")
 	public String uploadFileHandler(@RequestParam("file") MultipartFile file, Model model) {
-         //@RequestParam("name") String name,
-		
-		String name = "" ;
+		// @RequestParam("name") String name,
+
+		String name = "";
+		String message = "You successfully uploaded file";
 		if (!file.isEmpty()) {
 			try {
 				byte[] bytes = file.getBytes();
@@ -102,23 +99,28 @@ public class FileUploadController {
 					dir.mkdirs();
 
 				// Create the file on server
-				File serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + name);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
+				File serverFile = new File(dir.getAbsolutePath() + File.separator + name);
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
- 
-				model.addAttribute("message", 	"You successfully uploaded file=" + name);
-				return "upload" ;
-						
-					
+				String langguage = "eng";
+
+				try {
+					message = OCRService.ReadImage(serverFile.getAbsolutePath(), langguage);
+				} catch (Exception e) {
+					e.printStackTrace();
+					message = e.getMessage();
+				}
+
+				model.addAttribute("fileUrl", "image/" + name);
+				model.addAttribute("message", message);
+				return "upload";
+
 			} catch (Exception e) {
 				return "You failed to upload " + name + " => " + e.getMessage();
 			}
 		} else {
-			return "You failed to upload " + name
-					+ " because the file was empty.";
+			return "You failed to upload " + name + " because the file was empty.";
 		}
 	}
 
@@ -126,8 +128,7 @@ public class FileUploadController {
 	 * Upload multiple file using Spring Controller
 	 */
 	@RequestMapping(value = "/uploadMultipleFile", method = RequestMethod.POST)
-	public @ResponseBody
-	String uploadMultipleFileHandler(@RequestParam("name") String[] names,
+	public @ResponseBody String uploadMultipleFileHandler(@RequestParam("name") String[] names,
 			@RequestParam("file") MultipartFile[] files) {
 
 		if (files.length != names.length)
@@ -147,20 +148,16 @@ public class FileUploadController {
 					dir.mkdirs();
 
 				// Create the file on server
-				File serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + name);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
+				File serverFile = new File(dir.getAbsolutePath() + File.separator + name);
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
 
-				 
 			} catch (Exception e) {
 				return "You failed to upload " + name + " => " + e.getMessage();
 			}
 		}
 		return message;
 	}
-    
 
 }

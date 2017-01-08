@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import net.viralpatel.spring.model.Contact;
 
-
-
 @Controller
 public class HelloController {
-	private static SessionFactory sessionFactory = null;  
-	private static ServiceRegistry serviceRegistry = null;  
-	private static SessionFactory configureSessionFactory() throws HibernateException {  
-		Configuration configuration = new Configuration();  
-		configuration.configure();  
+	private static SessionFactory sessionFactory = null;
+	private static ServiceRegistry serviceRegistry = null;
+
+	private static SessionFactory configureSessionFactory() throws HibernateException {
+		Configuration configuration = new Configuration();
+		configuration.configure();
 
 		Properties properties = configuration.getProperties();
 
-		serviceRegistry = new ServiceRegistryBuilder().applySettings(properties).buildServiceRegistry();          
-		sessionFactory = configuration.buildSessionFactory(serviceRegistry);  
+		serviceRegistry = new ServiceRegistryBuilder().applySettings(properties).buildServiceRegistry();
+		sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
-		return sessionFactory;  
+		return sessionFactory;
 	}
+
 	@GetMapping("/hello")
 	public String hello(Model model) {
 
@@ -40,7 +40,7 @@ public class HelloController {
 		configureSessionFactory();
 
 		Session session = null;
-		Transaction tx=null;
+		Transaction tx = null;
 
 		try {
 			session = sessionFactory.openSession();
@@ -51,33 +51,35 @@ public class HelloController {
 			Contact yourContact = new Contact(24, "Your Name", "your_email@email.com");
 
 			// Saving to the database
-			//session.save(myContact);
-			//session.save(yourContact);
+			// session.save(myContact);
+			// session.save(yourContact);
 
 			// Committing the change in the database.
-			//session.flush();
-			//tx.commit();
+			// session.flush();
+			// tx.commit();
 
 			// Fetching saved data
-			//List<Contact> contactList = session.createQuery("from Contact").list();
+			// List<Contact> contactList = session.createQuery("from
+			// Contact").list();
 
-			//for (Contact contact : contactList) {
-				//System.out.println("Id: " + contact.getId() + " | Name:"  + contact.getName() + " | Email:" + contact.getEmail());
-			//}
+			// for (Contact contact : contactList) {
+			// System.out.println("Id: " + contact.getId() + " | Name:" +
+			// contact.getName() + " | Email:" + contact.getEmail());
+			// }
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 
-			// Rolling back the changes to make the data consistent in case of any failure 
+			// Rolling back the changes to make the data consistent in case of
+			// any failure
 			// in between multiple database write operations.
-			//tx.rollback();
-		} finally{
-			if(session != null) {
+			// tx.rollback();
+		} finally {
+			if (session != null) {
 				session.close();
 			}
 		}
-	
 
-	return "welcome";
-}
+		return "welcome";
+	}
 }

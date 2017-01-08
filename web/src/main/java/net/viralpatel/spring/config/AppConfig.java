@@ -30,18 +30,17 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
 	}
-	
+
 	@Bean
 	public DefaultServletHttpRequestHandler createDefaultServletHttpRequestHandler() {
-	    return new DefaultServletHttpRequestHandler();
+		return new DefaultServletHttpRequestHandler();
 	}
-
 
 	@Bean(name = "multipartResolver")
 	public CommonsMultipartResolver createMultipartResolver() {
-	    CommonsMultipartResolver resolver=new CommonsMultipartResolver();
-	    resolver.setDefaultEncoding("utf-8");
-	    return resolver;
+		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+		resolver.setDefaultEncoding("utf-8");
+		return resolver;
 	}
 
 }

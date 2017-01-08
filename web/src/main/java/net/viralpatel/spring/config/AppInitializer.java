@@ -13,14 +13,15 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import storage.FileSystemStorageService;
 import storage.StorageService;
 
-public class AppInitializer  extends AbstractAnnotationConfigDispatcherServletInitializer implements WebApplicationInitializer {
+public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer
+		implements WebApplicationInitializer {
 
 	public void onStartup(ServletContext container) throws ServletException {
 
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 		ctx.register(AppConfig.class);
-		//ctx.register(CommonsMultipartResolver.class);
-		//ctx.register(FileSystemStorageService.class);
+		// ctx.register(CommonsMultipartResolver.class);
+		// ctx.register(FileSystemStorageService.class);
 		ctx.setServletContext(container);
 
 		ServletRegistration.Dynamic servlet = container.addServlet("dispatcher", new DispatcherServlet(ctx));
@@ -28,7 +29,7 @@ public class AppInitializer  extends AbstractAnnotationConfigDispatcherServletIn
 		servlet.setLoadOnStartup(1);
 		servlet.addMapping("/");
 	}
-	
+
 	@Override
 	protected Class[] getRootConfigClasses() {
 		return new Class[] { AppConfig.class };
