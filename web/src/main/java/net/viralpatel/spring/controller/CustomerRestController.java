@@ -1,7 +1,9 @@
 package net.viralpatel.spring.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,15 +13,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
- 
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +37,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import net.viralpatel.spring.dao.CustomerDAO;
 import net.viralpatel.spring.model.Customer;
+import storage.OCRService;
 
 @RestController
 public class CustomerRestController {
@@ -42,7 +55,91 @@ public class CustomerRestController {
 	public List getCustomers() {
 		return customerDAO.list();
 	}
+	private  final static String getDateTime()  
+	{  
+	    DateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");  
+	    df.setTimeZone(TimeZone.getTimeZone("PST"));  
+	    return df.format(new Date());  
+	}  
+	
+	// java(controller)
+	@PostMapping("ajaxupload")
+	public Map<String,Object> saveCanvasImage(
+	        @RequestParam(value="imageBase64", defaultValue="")String imageBase64) {
+	    Map<String,Object> res = new HashMap<String, Object>();
+		String name = getDateTime() +".png" ;
+		String message = "You successfully uploaded file";
+		
+	    try{
+	    	String rootPath = System.getProperty("catalina.home");
+			File dir = new File(rootPath + File.separator + "tmpFiles");
+			if (!dir.exists())
+				dir.mkdirs();
+			 
+			File file = new File(dir.getAbsolutePath() + File.separator + name);
+	    	 
+			 byte[] decodedBytes = DatatypeConverter.parseBase64Binary(imageBase64.replaceAll("data:image/.+;base64,", ""));
+		        BufferedImage bfi = ImageIO.read(new ByteArrayInputStream(decodedBytes));
+		        ImageIO.write(bfi , "png", file);
+		        bfi.flush();
+		        res.put("ret", 0);
+			 
 
+		 
+	    	
+	    }catch(Exception e){
+	        res.put("ret", -1);
+	        res.put("msg", "Cannot process due to the image processing error.");
+	        return res;
+	    }
+
+	    return res;
+	}
+	
+	@PostMapping("/image/upload")
+	public String saveImage(@RequestParam("file") MultipartFile file, Model model) {
+		// @RequestParam("name") String name,
+
+		String name = getDateTime();
+		String message = "You successfully uploaded file";
+		if (!file.isEmpty()) {
+			try {
+				byte[] bytes = file.getBytes();
+				String realfile = file.getOriginalFilename();
+				name += realfile.substring(realfile.lastIndexOf("."), realfile.length());
+				// Creating the directory to store file
+				String rootPath = System.getProperty("catalina.home");
+				File dir = new File(rootPath + File.separator + "tmpFiles");
+				if (!dir.exists())
+					dir.mkdirs();
+
+				// Create the file on server
+				File serverFile = new File(dir.getAbsolutePath() + File.separator + name);
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+				stream.write(bytes);
+				stream.close();
+				String langguage = "eng";
+
+				try {
+					message = OCRService.ReadImage(serverFile.getAbsolutePath(), langguage);
+				} catch (Exception e) {
+					e.printStackTrace();
+					message = e.getMessage();
+				}
+
+				model.addAttribute("fileUrl", "image/" + name);
+				model.addAttribute("message", message);
+				return "upload";
+
+			} catch (Exception e) {
+				return "You failed to upload " + name + " => " + e.getMessage();
+			}
+		} else {
+			return "You failed to upload " + name + " because the file was empty.";
+		}
+	}
+
+	
 	@GetMapping("/image/{filename}.{fileext}")
 	public void getImage(HttpServletRequest request, HttpServletResponse response, @PathVariable("filename") String filename,  @PathVariable("fileext") String fileext) throws IOException {
 

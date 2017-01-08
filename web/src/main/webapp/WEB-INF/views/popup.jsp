@@ -21,7 +21,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button id="save" type="button" class="btn btn-primary">Save changes</button>
 				</div>
 			</div>
 		</div>
@@ -61,6 +61,56 @@
 			context.drawImage(video, 0, 0, 468, 320);
 		});
 	});
-	 
+	$("#save").on("click", function() {
+		
+		 
+		    var canvas  = document.getElementById("canvas");
+		    ctx = canvas.getContext('2d') 
+		    
+		   var dataUrl = canvas.toDataURL();
+		    
+		   // var dataUrl = canvas.toDataURL("image/jpeg");
+	    var xmlHttpReq = false;       
+	    if (window.XMLHttpRequest) {
+	        ajax = new XMLHttpRequest();
+	    }
+
+	    else if (window.ActiveXObject) {
+	        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+	    }
+	   ajax.open('POST', 'ajaxupload', false);
+	   ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	   ajax.onreadystatechange = function() {
+	        console.log(ajax.responseText);
+	    }
+	   ajax.send("imageBase64="+dataUrl);
+	   
+	});
+	
 	 
 	</script>
+	
+	<!--
+		var canvas = document.getElementById('canvas');
+		 var imageData = canvas.toDataUrl();
+
+		    $.ajax({
+		        url:'ajaxupload',
+		        data:{imageBase64: imageData},
+		        type: 'post',
+		        dataType: 'json',
+		        timeout: 10000,
+		        async: false,
+		        error: function(){
+		            alert('error')
+		        },
+		        success: function(res){
+		            if(res.ret==0){
+		                console.log("SUCCESS");
+		            }else{
+		                console.log("FAIL : " + res.msg);
+		            }
+		        }
+		    });
+		    
+		    -->
