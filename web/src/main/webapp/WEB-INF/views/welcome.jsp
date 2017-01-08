@@ -15,12 +15,12 @@
 	<p>Welcome, ${name}</p>
 
 	<!-- Button trigger modal -->
-	<a type="button" class="btn btn-primary" data-toggle="modal"
-		   href="#myModal" >Show information</a>
+	<a type="button" class="btn btn-primary" data-toggle="modal" href="#myModal" >Take picture</a>
 		    
 	  <c:import url='popup.jsp'></c:import>   
 	 
 	
 </div>
+
 </body>
 </html>

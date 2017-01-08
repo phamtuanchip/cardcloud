@@ -8,7 +8,7 @@
 <body>
 	<div class="container">
 		<c:import url='nav.jsp'></c:import>
-		<div class="card" style="width: 30em; height:30em; float:left;">
+		<div class="card" style="width: 30em; min-height:30em; float:left;">
 		  <h4 class="card-title">Reading card</h4>
 		<form id ="upload" method="POST" action="upload" enctype="multipart/form-data">
 			<input  id="file" type="file" name="file" style="display:none;">
@@ -16,7 +16,7 @@
 		 <label for="file"><img id="preview" src="${fileUrl}" class="card-img-top" alt="Click to select image" style="max-width: 30em; max-height:20em;"/></label> 
 		  <div class="card-block">
 		  
-		    <p id="content" class="card-text">${message}</p>
+		    <pre id="content" class="card-text">${message}</pre>
 		     <label  class="btn btn-primary" for="submit">Process</label>
 		     <label  class="btn btn-primary" for="">Save</label>
 		  </div>
@@ -79,7 +79,7 @@
 		</form>
 		</div>
 	</div>
-
+    
 	<script type="text/javascript">
 		function readURL(input) {
 			if (input.files && input.files[0]) {
