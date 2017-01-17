@@ -1,1 +1,1 @@
-call mvn tomcat7:run
+call mvn -Dmaven.tomcat.port=8181 tomcat7:run
