@@ -90,10 +90,44 @@
 		<finalName>HelloWorld</finalName>
 		<pluginManagement>
 			<plugins>
+			   <plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<configuration>
+					<container>
+						<containerId>tomcat8x</containerId>
+						<artifactInstaller>
+							<groupId>org.apache.tomcat</groupId>
+							<artifactId>tomcat</artifactId>
+							<version>${tomcat.version}</version>
+						</artifactInstaller>
+					</container>
+					<configuration>
+						<type>standalone</type>
+						<home>
+							${project.build.directory}/apache-tomcat-${tomcat.version}
+						</home>
+						<properties>
+							<cargo.servlet.port>8282</cargo.servlet.port>
+							<cargo.logging>high</cargo.logging>
+						</properties>
+					</configuration>
+					<deployables>
+						<deployable>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<type>war</type>
+							<properties>
+								<context>/myapp</context>
+							</properties>
+						</deployable>
+					</deployables>
+				</configuration>
+			</plugin>
 				<plugin>
 					<groupId>org.apache.tomcat.maven</groupId>
-					<artifactId>tomcat7-maven-plugin</artifactId>
-					<version>2.2</version>
+					<artifactId>tomcat8-maven-plugin</artifactId>
+					<version>3.0-r1655215</version>
 					<configuration>
 						<path>/spring4</path>
 					</configuration>

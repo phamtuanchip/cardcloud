@@ -1,0 +1,1 @@
+call mvn clean verify org.codehaus.cargo:cargo-maven2-plugin:run -Dcargo.maven.containerId=tomcat7x -Dcargo.maven.containerUrl=http://repo1.maven.org/maven2/org/apache/tomcat/tomcat/7.0.68/tomcat-7.0.68.zip
