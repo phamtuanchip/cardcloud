@@ -10,7 +10,7 @@
 	<artifactId>cloudsmart-fe</artifactId>
 	<packaging>war</packaging>
 
-	<name>HelloWorld Maven Webapp</name>
+	<name>Card scan Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>
@@ -87,7 +87,7 @@
 		
 	</dependencies>
 	<build>
-		<finalName>HelloWorld</finalName>
+		<finalName>card8</finalName>
 		<pluginManagement>
 			<plugins>
 			   <plugin>
@@ -126,10 +126,10 @@
 			</plugin>
 				<plugin>
 					<groupId>org.apache.tomcat.maven</groupId>
-					<artifactId>tomcat8-maven-plugin</artifactId>
-					<version>3.0-r1655215</version>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>2.2</version>
 					<configuration>
-						<path>/spring4</path>
+						<path>/card8</path>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -147,7 +147,7 @@
 					<version>2.4</version>
 					<configuration>
 						<warSourceDirectory>src/main/webapp</warSourceDirectory>
-						<warName>helloworld</warName>
+						<warName>card8</warName>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
 				</plugin>				 
