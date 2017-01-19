@@ -9,8 +9,7 @@
 
 	<artifactId>cloudsmart-fe</artifactId>
 	<packaging>war</packaging>
-
-	<name>ORC card reader Maven Webapp</name>
+	<name>ORC card reader Maven Webapp</name> 
 	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>
